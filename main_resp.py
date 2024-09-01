@@ -57,7 +57,7 @@ def visualize_predictions(img, model):
     st.pyplot(plt)
 
 # Set Streamlit page configuration for mobile responsiveness
-st.set_page_config(page_title="Diagnostic Classification", layout="centered")
+#st.set_page_config(page_title="Diagnostic Classification", layout="centered")
 
 # Main header and image upload section
 st.title("Sistema de Classificação Diagnóstico")
