@@ -36,7 +36,7 @@ data_transforms = {
 st.set_option('deprecation.showPyplotGlobalUse', False)
 st.title("Sistema de Classificação Diagnóstico")
 
-data_dir = 'chest_xray'
+data_dir = 'bloodcells'
 image_datasets = {x: datasets.ImageFolder(os.path.join(data_dir, x),
                                           data_transforms[x])
                   for x in ['train', 'val']}
