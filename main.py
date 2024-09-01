@@ -39,11 +39,11 @@ st.title("Sistema de Classificação Diagnóstico")
 data_dir = 'bloodcells'
 image_datasets = {x: datasets.ImageFolder(os.path.join(data_dir, x),
                                           data_transforms[x])
-                  for x in ['train', 'val']}
+                  for x in ['bloodcells', 'bloodcells']}
 dataloaders = {x: torch.utils.data.DataLoader(image_datasets[x], batch_size=4,
                                              shuffle=True, num_workers=4)
-              for x in ['train', 'val']}
-dataset_sizes = {x: len(image_datasets[x]) for x in ['train', 'val']}
+              for x in ['bloodcells', 'bloodcells']}
+dataset_sizes = {x: len(image_datasets[x]) for x in ['bloodcells', 'bloodcells']}
 class_names = image_datasets['train'].classes
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -56,11 +56,11 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 image_datasets = {x: datasets.ImageFolder(os.path.join(data_dir, x),
                                           data_transforms[x])
-                  for x in ['train', 'val']}
+                  for x in ['bloodcells', 'bloodcells']}
 dataloaders = {x: torch.utils.data.DataLoader(image_datasets[x], batch_size=4,
                                              shuffle=True, num_workers=4)
               for x in ['train', 'val']}
-dataset_sizes = {x: len(image_datasets[x]) for x in ['train', 'val']}
+dataset_sizes = {x: len(image_datasets[x]) for x in ['bloodcells', 'bloodcells']}
 class_names = image_datasets['train'].classes
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -108,8 +108,8 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
             st.write('-' * 10)
             #########################
             # Each epoch has a training and validation phase
-            for phase in ['train', 'val']:
-                if phase == 'train':
+            for phase in ['bloodcells', 'bloodcells']:
+                if phase == 'bloodcells':
                     model.train()  # Set model to training mode
                 else:
                     model.eval()   # Set model to evaluate mode
