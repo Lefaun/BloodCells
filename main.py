@@ -250,7 +250,13 @@ def visualize_model_predictions(model, img_path=None):
         return
 
     try:
+        # Open image and convert to RGB if needed
         img = Image.open(img_path)
+        if img.mode == 'RGBA':
+            img = img.convert('RGB')
+        elif img.mode == 'L':
+            img = img.convert('RGB')
+        
         img = data_transforms['val'](img)
         img = img.unsqueeze(0)
         img = img.to(device)
@@ -262,6 +268,7 @@ def visualize_model_predictions(model, img_path=None):
             fig, ax = plt.subplots()
             ax.axis('off')
             ax.set_title(f'Predicted: {class_names[preds[0]]}')
+            
             # Inverse transform for visualization
             inp = img.cpu().data[0].numpy().transpose((1, 2, 0))
             mean = np.array([0.485, 0.456, 0.406])
@@ -275,6 +282,7 @@ def visualize_model_predictions(model, img_path=None):
     except Exception as e:
         st.error(f"Error processing image: {e}")
 
+# In your Streamlit UI code:
 col1, col2 = st.columns(2)
 
 with col1:
