@@ -241,37 +241,58 @@ visualize_model(model_conv)
 
 st.pyplot(visualize_model(model_conv))
 
-def visualize_model_predictions(model,img_path):
+def visualize_model_predictions(model, img_path=None):
     was_training = model.training
     model.eval()
 
-    img = Image.open(img_path)
-    img = data_transforms['val'](img)
-    img = img.unsqueeze(0)
-    img = img.to(device)
+    if img_path is None:
+        st.warning("Please upload an image first")
+        return
 
-    with torch.no_grad():
-        outputs = model(img)
-        _, preds = torch.max(outputs, 1)
+    try:
+        img = Image.open(img_path)
+        img = data_transforms['val'](img)
+        img = img.unsqueeze(0)
+        img = img.to(device)
 
-        ax = plt.subplot(2,2,1)
-        ax.axis('off')
-        ax.set_title(f'Predicted: {class_names[preds[0]]}')
-        imshow(img.cpu().data[0])
+        with torch.no_grad():
+            outputs = model(img)
+            _, preds = torch.max(outputs, 1)
+
+            fig, ax = plt.subplots()
+            ax.axis('off')
+            ax.set_title(f'Predicted: {class_names[preds[0]]}')
+            # Inverse transform for visualization
+            inp = img.cpu().data[0].numpy().transpose((1, 2, 0))
+            mean = np.array([0.485, 0.456, 0.406])
+            std = np.array([0.229, 0.224, 0.225])
+            inp = std * inp + mean
+            inp = np.clip(inp, 0, 1)
+            ax.imshow(inp)
+            st.pyplot(fig)
 
         model.train(mode=was_training)
-        
+    except Exception as e:
+        st.error(f"Error processing image: {e}")
+
 col1, col2 = st.columns(2)
 
 with col1:
     st.header("Faça o Upload da Imagem de Diagnóstico")
-    uploaded_file = st.file_uploader("Escolha uma imagem...", type=["jpg", "jpeg", "png", 'gif'])
-    visualize_model_predictions(
-        model_conv, img_path=(uploaded_file)
-    )
+    uploaded_file = st.file_uploader("Escolha uma imagem...", type=["jpg", "jpeg", "png", "gif"])
+    
+    if uploaded_file is not None:
+        # Save the uploaded file to a temporary file
+        with TemporaryDirectory() as tempdir:
+            temp_path = os.path.join(tempdir, uploaded_file.name)
+            with open(temp_path, "wb") as f:
+                f.write(uploaded_file.getbuffer())
+            
+            visualize_model_predictions(model_conv, temp_path)
 
 with col2:
-    st.image(uploaded_file)
+    if uploaded_file is not None:
+        st.image(uploaded_file)
     
 st.pyplot(visualize_model_predictions(
         model_conv, img_path=(uploaded_file)
